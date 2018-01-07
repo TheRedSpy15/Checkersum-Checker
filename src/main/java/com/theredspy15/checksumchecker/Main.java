@@ -45,8 +45,8 @@ public class Main extends Application {
     private Label warningLbl = new Label("NOTE: only supports : MD5, SHA-1, and SHA-256");
     private Button selectFile = new Button("Select AND check file");
     private VBox layout = new VBox(10);
-    private TextField checksumField = new TextField();
-    private TextField typeField = new TextField();
+    private TextField checksumField = new TextField("Checksum to compare against");
+    private TextField typeField = new TextField("MD5, SHA-1, or SHA-256");
     private FileChooser fileChooser = new FileChooser();
     private Hyperlink gitHubLink = new Hyperlink("Github page");
 
