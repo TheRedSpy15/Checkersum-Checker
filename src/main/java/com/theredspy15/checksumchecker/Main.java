@@ -23,13 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -41,14 +39,17 @@ import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
 
-    private Label instructionLbl = new Label("Enter the (what should be) checksum of the file your selected");
-    private Label warningLbl = new Label("NOTE: only supports : MD5, SHA-1, and SHA-256");
+    private Label instructionLbl = new Label("Enter the checksum to compare against");
     private Button selectFile = new Button("Select AND check file");
     private VBox layout = new VBox(10);
-    private TextField checksumField = new TextField("Checksum to compare against");
-    private TextField typeField = new TextField("MD5, SHA-1, or SHA-256");
+    private TextField checksumField = new TextField();
     private FileChooser fileChooser = new FileChooser();
     private Hyperlink gitHubLink = new Hyperlink("Github page");
+    private MenuButton algorithmSelector = new MenuButton();
+    private Font fontSize = new Font(20);
+    private File file;
+
+    private String algorithm = "MD5";
 
     public static void main(String args[]){
 
@@ -56,9 +57,31 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 
         gitHubLink.setOnAction(e -> getHostServices().showDocument("https://github.com/TheRedSpy15/Checkersum-Checker"));
+
+        instructionLbl.setFont(fontSize);
+
+        MenuItem md5 = new MenuItem("MD5");
+        MenuItem sha1 = new MenuItem("SHA-1");
+        MenuItem sha256 = new MenuItem("SHA-256");
+
+        md5.setOnAction(e -> {
+            algorithm = "MD5";
+            algorithmSelector.setText("MD5");
+        });
+        sha1.setOnAction(e -> {
+            algorithm = "SHA-1";
+            algorithmSelector.setText("SHA-1");
+        });
+        sha256.setOnAction(e -> {
+            algorithm = "SHA-256";
+            algorithmSelector.setText("SHA-256");
+        });
+
+        algorithmSelector.getItems().addAll(md5, sha1, sha256);
+        algorithmSelector.setText("MD5");
 
         fileChooser.setTitle("Select File");
         fileChooser.getExtensionFilters().addAll(
@@ -68,47 +91,44 @@ public class Main extends Application {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
 
         selectFile.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(final ActionEvent e) {
-                        File file = fileChooser.showOpenDialog(primaryStage);
-                        if (file != null) {
-                            checkFile(file);
-                        }
+                e -> {
+                    file = fileChooser.showOpenDialog(primaryStage);
+                    if (file != null) {
+                        checkFile(file);
                     }
                 });
 
-        primaryStage.setTitle("Checksum Checker 1.0 - By TheRedSpy15");
+        primaryStage.setTitle("Checksum Checker 2.0 - By TheRedSpy15");
 
-        layout.getChildren().addAll(instructionLbl, checksumField, typeField, selectFile, warningLbl, gitHubLink);
+        layout.getChildren().addAll(instructionLbl, checksumField, algorithmSelector, selectFile, gitHubLink);
         layout.setPadding(new Insets(20,20,20,20));
 
-        Scene checksumScene = new Scene(layout);
+        Scene checksumScene = new Scene(layout, 600,200);
 
         primaryStage.setScene(checksumScene);
 
         primaryStage.show();
     }
 
-    private void checkFile(File file){
+    private void checkFile(File file) {
 
         boolean result;
 
-        String type = typeField.getText();
+        String hashType = algorithm;
 
         String filepath = file.getAbsolutePath();
         StringBuilder sum = new StringBuilder();
         try
         {
-            MessageDigest md = MessageDigest.getInstance(type);
-            FileInputStream fis = new FileInputStream(filepath);
+            MessageDigest messageDigest = MessageDigest.getInstance(hashType);
+            FileInputStream fileInputStream = new FileInputStream(filepath);
             byte[] dataBytes = new byte[1024];
-            int nread = 0;
+            int nread;
 
-            while((nread = fis.read(dataBytes)) != -1)
-                md.update(dataBytes, 0, nread);
+            while((nread = fileInputStream.read(dataBytes)) != -1)
+                messageDigest.update(dataBytes, 0, nread);
 
-            byte[] mdbytes = md.digest();
+            byte[] mdbytes = messageDigest.digest();
 
             for (byte mdbyte : mdbytes) sum.append(Integer.toString((mdbyte & 0xff) + 0x100, 16).substring(1));
         }
@@ -117,10 +137,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        if (checksumField.getText().contentEquals(sum)) result = true;
-        else result = false;
-
-        System.out.print("File checksum: " + sum);
+        result = checksumField.getText().contentEquals(sum);
 
         outputResult(result, sum.toString());
     }
@@ -129,13 +146,19 @@ public class Main extends Application {
 
         Stage notificationStage = new Stage();
 
-        Label label = new Label("File checksum: " + sum + " | Equal: " + result);
+        Label sumLbl = new Label("File checksum: " + sum);
+        Label equalLbl = new Label("Equal: " + result);
+        Label fileLbl = new Label("File: " + file);
 
-        StackPane stackPane = new StackPane();
-        stackPane.setPadding(new Insets(20,20,20,20));
-        stackPane.getChildren().add(label);
+        sumLbl.setFont(fontSize);
+        equalLbl.setFont(fontSize);
+        fileLbl.setFont(fontSize);
 
-        Scene scene = new Scene(stackPane);
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(20,20,20,20));
+        vBox.getChildren().addAll(fileLbl, sumLbl, equalLbl);
+
+        Scene scene = new Scene(vBox);
         notificationStage.setScene(scene);
 
         notificationStage.showAndWait();
