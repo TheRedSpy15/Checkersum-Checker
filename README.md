@@ -1,8 +1,7 @@
 # Checkersum-Checker
 A checksum checker made in Java using JavaFX, that supports MD5, SHA-1, and SHA-256
 
-<!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/TheRedSpy15/The-Trail/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download TheRedSpy15/The-Trail on GitHub">Download</a>
+<a class="github-button" href="https://github.com/TheRedSpy15/Checkersum-Checker/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download TheRedSpy15/Checkersum-Checker on GitHub">Download</a>
 
 [![Checksum_Checker_Screen_Shot.jpg](https://s13.postimg.org/515ror7l3/Checksum_Checker_Screen_Shot.jpg)](https://postimg.org/image/63fy7aqeb/)
 
