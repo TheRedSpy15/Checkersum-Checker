@@ -2,3 +2,4 @@ language: java,
 group: stable,
 dist: Trusty,
 os: Windows
+gradle check
