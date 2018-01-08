@@ -60,8 +60,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         gitHubLink.setOnAction(e -> getHostServices().showDocument("https://github.com/TheRedSpy15/Checkersum-Checker"));
+        gitHubLink.setStyle("-fx-text-fill : GOLD");
 
         instructionLbl.setFont(fontSize);
+        instructionLbl.setStyle("-fx-text-fill : WHITE");
 
         MenuItem md5 = new MenuItem("MD5");
         MenuItem sha1 = new MenuItem("SHA-1");
@@ -98,10 +100,11 @@ public class Main extends Application {
                     }
                 });
 
-        primaryStage.setTitle("Checksum Checker 2.0 - By TheRedSpy15");
+        primaryStage.setTitle("Checksum Checker 3.0 - By TheRedSpy15");
 
         layout.getChildren().addAll(instructionLbl, checksumField, algorithmSelector, selectFile, gitHubLink);
         layout.setPadding(new Insets(20,20,20,20));
+        layout.setStyle("-fx-background-color : #003153");
 
         Scene checksumScene = new Scene(layout, 600,200);
 
@@ -154,9 +157,17 @@ public class Main extends Application {
         equalLbl.setFont(fontSize);
         fileLbl.setFont(fontSize);
 
+        if (result) equalLbl.setStyle("-fx-text-fill : GREEN");
+        else equalLbl.setStyle("-fx-text-fill : RED");
+
+        sumLbl.setStyle("-fx-text-fill : WHITE");
+        fileLbl.setStyle("-fx-text-fill : WHITE");
+
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(20,20,20,20));
         vBox.getChildren().addAll(fileLbl, sumLbl, equalLbl);
+
+        vBox.setStyle("-fx-background-color : #003153");
 
         Scene scene = new Scene(vBox);
         notificationStage.setScene(scene);
