@@ -39,14 +39,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
 
-    private Label instructionLbl = new Label("Enter the checksum to compare against");
+    private final  Label instructionLbl = new Label("Enter the checksum to compare against");
+    private final Font fontSize = new Font(20);
     private Button selectFile = new Button("Select AND check file");
     private VBox layout = new VBox(10);
     private TextField checksumField = new TextField();
     private FileChooser fileChooser = new FileChooser();
     private Hyperlink gitHubLink = new Hyperlink("Github page");
     private MenuButton algorithmSelector = new MenuButton();
-    private Font fontSize = new Font(20);
     private File file;
 
     private String algorithm = "MD5";
@@ -65,9 +65,12 @@ public class Main extends Application {
         instructionLbl.setFont(fontSize);
         instructionLbl.setStyle("-fx-text-fill : WHITE");
 
-        MenuItem md5 = new MenuItem("MD5");
-        MenuItem sha1 = new MenuItem("SHA-1");
-        MenuItem sha256 = new MenuItem("SHA-256");
+        final MenuItem md5 = new MenuItem("MD5");
+        final MenuItem sha1 = new MenuItem("SHA-1");
+        final MenuItem sha224 = new MenuItem("SHA-224");
+        final MenuItem sha256 = new MenuItem("SHA-256");
+        final MenuItem sha384 = new MenuItem("SHA-384");
+        final MenuItem sha512 = new MenuItem("SHA-512");
 
         md5.setOnAction(e -> {
             algorithm = "MD5";
@@ -77,12 +80,24 @@ public class Main extends Application {
             algorithm = "SHA-1";
             algorithmSelector.setText("SHA-1");
         });
+        sha224.setOnAction(e -> {
+            algorithm = "SHA-224";
+            algorithmSelector.setText("SHA-224");
+        });
         sha256.setOnAction(e -> {
             algorithm = "SHA-256";
             algorithmSelector.setText("SHA-256");
         });
+        sha384.setOnAction(e -> {
+            algorithm = "SHA-384";
+            algorithmSelector.setText("SHA-384");
+        });
+        sha512.setOnAction(e -> {
+            algorithm = "SHA-512";
+            algorithmSelector.setText("SHA-512");
+        });
 
-        algorithmSelector.getItems().addAll(md5, sha1, sha256);
+        algorithmSelector.getItems().addAll(md5, sha1, sha224, sha256, sha384, sha512);
         algorithmSelector.setText("MD5");
 
         fileChooser.setTitle("Select File");
@@ -100,7 +115,15 @@ public class Main extends Application {
                     }
                 });
 
-        primaryStage.setTitle("Checksum Checker 3.0 - By TheRedSpy15");
+        checksumField.setOnAction(
+                e -> {
+                    file = fileChooser.showOpenDialog(primaryStage);
+                    if (file != null) {
+                        checkFile(file);
+                    }
+                });
+
+        primaryStage.setTitle("Checksum Checker 4.0 - By TheRedSpy15");
 
         layout.getChildren().addAll(instructionLbl, checksumField, algorithmSelector, selectFile, gitHubLink);
         layout.setPadding(new Insets(20,20,20,20));
@@ -115,11 +138,9 @@ public class Main extends Application {
 
     private void checkFile(File file) {
 
-        boolean result;
+        final String hashType = algorithm;
 
-        String hashType = algorithm;
-
-        String filepath = file.getAbsolutePath();
+        final String filepath = file.getAbsolutePath();
         StringBuilder sum = new StringBuilder();
         try
         {
@@ -140,7 +161,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        result = checksumField.getText().contentEquals(sum);
+        final boolean result = checksumField.getText().contentEquals(sum);
 
         outputResult(result, sum.toString());
     }
