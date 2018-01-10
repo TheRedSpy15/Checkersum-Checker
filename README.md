@@ -21,4 +21,10 @@ You know when you try to download a file off the internet, or have a super impor
 
 SO... when you download launchcodes.exe from a website, look for a hash or something that says something like: MD5, SHA-1, or SHA-256. Those are hashes used to add a fingerprint to your file. Use those to compare against the copy locally on your computer, to make sure nothing bad happened to them.
 
+## What's it NOT used for?
+
+It will not protect you from viruses.
+
+At-least, not when the original file was one. It will protect you from viruses/malware, when the virus/malware was added to the file in transit, or while you were away (assuming you know the orginal checksum associated with the file before hand).
+
 ### Java is required!
