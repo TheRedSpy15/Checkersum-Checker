@@ -1,5 +1,14 @@
 # Checkersum-Checker
-A checksum checker made in Java using JavaFX, that supports MD5, SHA-1, and SHA-256
+A checksum checker made in Java using JavaFX, that supports a range of hashes.
+
+**SUPPORTS**
+* MD5
+* SHA-1
+* SHA-224
+* SHA-256
+* SHA-384
+* SHA-512
+
 
 <a class="github-button" href="https://github.com/TheRedSpy15/Checkersum-Checker/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download TheRedSpy15/Checkersum-Checker on GitHub">Download</a>
 
