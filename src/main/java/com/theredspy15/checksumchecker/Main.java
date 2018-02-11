@@ -22,6 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
+import com.jfoenix.controls.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -39,17 +40,22 @@ import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
 
-    private final  Label instructionLbl = new Label("Enter the checksum to compare against");
-    private final Font fontSize = new Font(20);
-    private Button selectFile = new Button("Select AND check file");
+    // NEXT VERSION
+
+    // Added javadoc
+    // Added comments
+    // Added code quality badges on readme
+
+    private final Font font = new Font("IMPACT",20);
+    private Label instructionLbl = new Label("Enter the checksum to compare against");
+    private JFXButton selectFile = new JFXButton("Select AND check file");
     private VBox layout = new VBox(10);
-    private TextField checksumField = new TextField();
+    private JFXTextField checksumField = new JFXTextField();
     private FileChooser fileChooser = new FileChooser();
     private Hyperlink gitHubLink = new Hyperlink("Github page");
-    private MenuButton algorithmSelector = new MenuButton();
+    private JFXComboBox<String> algorithmSelector = new JFXComboBox<>();
     private File file;
-
-    private String algorithm = "MD5";
+    private boolean equalSums = false;
 
     public static void main(String args[]){
 
@@ -61,50 +67,27 @@ public class Main extends Application {
 
         gitHubLink.setOnAction(e -> getHostServices().showDocument("https://github.com/TheRedSpy15/Checkersum-Checker"));
         gitHubLink.setStyle("-fx-text-fill : GOLD");
+        gitHubLink.setFont(font);
 
-        instructionLbl.setFont(fontSize);
+        instructionLbl.setFont(font);
         instructionLbl.setStyle("-fx-text-fill : WHITE");
 
-        final MenuItem md5 = new MenuItem("MD5");
-        final MenuItem sha1 = new MenuItem("SHA-1");
-        final MenuItem sha224 = new MenuItem("SHA-224");
-        final MenuItem sha256 = new MenuItem("SHA-256");
-        final MenuItem sha384 = new MenuItem("SHA-384");
-        final MenuItem sha512 = new MenuItem("SHA-512");
+        checksumField.setFont(font);
+        checksumField.setStyle("-fx-text-fill : WHITE");
 
-        md5.setOnAction(e -> {
-            algorithm = "MD5";
-            algorithmSelector.setText("MD5");
-        });
-        sha1.setOnAction(e -> {
-            algorithm = "SHA-1";
-            algorithmSelector.setText("SHA-1");
-        });
-        sha224.setOnAction(e -> {
-            algorithm = "SHA-224";
-            algorithmSelector.setText("SHA-224");
-        });
-        sha256.setOnAction(e -> {
-            algorithm = "SHA-256";
-            algorithmSelector.setText("SHA-256");
-        });
-        sha384.setOnAction(e -> {
-            algorithm = "SHA-384";
-            algorithmSelector.setText("SHA-384");
-        });
-        sha512.setOnAction(e -> {
-            algorithm = "SHA-512";
-            algorithmSelector.setText("SHA-512");
-        });
+        selectFile.setFont(font);
+        selectFile.setStyle("-jfx-button-type: RAISED; -fx-background-color: GRAY; -fx-text-fill: WHITE;");
 
-        algorithmSelector.getItems().addAll(md5, sha1, sha224, sha256, sha384, sha512);
-        algorithmSelector.setText("MD5");
+        algorithmSelector.setStyle("-fx-background-color: GRAY; -fx-text-fill: WHITE;");
+        algorithmSelector.getItems().addAll("MD5", "SHA-1", "SHA-224", "SHA-256", "SHA-384", "SHA-512");
+        algorithmSelector.setPromptText("Select Hash");
 
         fileChooser.setTitle("Select File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt"),
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
-                new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"),
+                new FileChooser.ExtensionFilter("Text Files (.txt)", "*.txt"),
+                new FileChooser.ExtensionFilter("Image Files (.png, .jpg, .gif, .bmp)", "*.png", "*.jpg", "*.gif", "bmp"),
+                new FileChooser.ExtensionFilter("Audio Files (.wav, .mp3, .aac, .m4a)", "*.wav", "*.mp3", "*.aac", "*.m4a"),
+                new FileChooser.ExtensionFilter("Executables (.exe)", "*.exe"),
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
 
         selectFile.setOnAction(
@@ -123,13 +106,14 @@ public class Main extends Application {
                     }
                 });
 
-        primaryStage.setTitle("Checksum Checker 4.0 - By TheRedSpy15");
-
         layout.getChildren().addAll(instructionLbl, checksumField, algorithmSelector, selectFile, gitHubLink);
         layout.setPadding(new Insets(20,20,20,20));
-        layout.setStyle("-fx-background-color : #003153");
+        layout.setStyle("-fx-background-color : #36454f");
 
-        Scene checksumScene = new Scene(layout, 600,200);
+        JFXDecorator decorator = new JFXDecorator(primaryStage, layout);
+        decorator.setText("Checksum Checker - 5.0");
+
+        Scene checksumScene = new Scene(decorator, 600,275);
 
         primaryStage.setScene(checksumScene);
 
@@ -138,13 +122,11 @@ public class Main extends Application {
 
     private void checkFile(File file) {
 
-        final String hashType = algorithm;
-
         final String filepath = file.getAbsolutePath();
         StringBuilder sum = new StringBuilder();
         try
         {
-            MessageDigest messageDigest = MessageDigest.getInstance(hashType);
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithmSelector.getValue());
             FileInputStream fileInputStream = new FileInputStream(filepath);
             byte[] dataBytes = new byte[1024];
             int nread;
@@ -161,24 +143,24 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        final boolean result = checksumField.getText().contentEquals(sum);
+        equalSums = checksumField.getText().contentEquals(sum);
 
-        outputResult(result, sum.toString());
+        outputResult(sum.toString());
     }
 
-    private void outputResult(boolean result, String sum){
+    private void outputResult(String sum){
 
         Stage notificationStage = new Stage();
 
         Label sumLbl = new Label("File checksum: " + sum);
-        Label equalLbl = new Label("Equal: " + result);
+        Label equalLbl = new Label("Equal: " + equalSums);
         Label fileLbl = new Label("File: " + file);
 
-        sumLbl.setFont(fontSize);
-        equalLbl.setFont(fontSize);
-        fileLbl.setFont(fontSize);
+        sumLbl.setFont(font);
+        equalLbl.setFont(font);
+        fileLbl.setFont(font);
 
-        if (result) equalLbl.setStyle("-fx-text-fill : GREEN");
+        if (equalSums) equalLbl.setStyle("-fx-text-fill : GREEN");
         else equalLbl.setStyle("-fx-text-fill : RED");
 
         sumLbl.setStyle("-fx-text-fill : WHITE");
@@ -188,9 +170,11 @@ public class Main extends Application {
         vBox.setPadding(new Insets(20,20,20,20));
         vBox.getChildren().addAll(fileLbl, sumLbl, equalLbl);
 
-        vBox.setStyle("-fx-background-color : #003153");
+        vBox.setStyle("-fx-background-color : #36454f");
 
-        Scene scene = new Scene(vBox);
+        JFXDecorator decorator = new JFXDecorator(notificationStage, vBox);
+
+        Scene scene = new Scene(decorator);
         notificationStage.setScene(scene);
 
         notificationStage.showAndWait();

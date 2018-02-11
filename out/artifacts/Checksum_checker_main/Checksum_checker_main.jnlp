@@ -8,7 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Checksum_checker_main.jar" size="5180" download="eager" />
+    <jar href="Checksum_checker_main.jar" size="5085" download="eager" />
+    <jar href="jfoenix-8.0.1.jar" size="2405714" download="eager" />
   </resources>
   <jfx:javafx-desc  width="600" height="400" main-class="com.theredspy15.checksumchecker.Main"  name="Checksum_checker_main" />
   <update check="background"/>
