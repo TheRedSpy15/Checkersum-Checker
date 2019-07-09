@@ -22,11 +22,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXTextField;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -57,7 +61,7 @@ public class Main extends Application {
     private File file;
     private boolean equalSums = false;
 
-    public static void main(String args[]){
+    public static void main(String[] args){
 
         launch(args);
     }
@@ -122,12 +126,12 @@ public class Main extends Application {
 
     private void checkFile(File file) {
 
-        final String filepath = file.getAbsolutePath();
+        final String filePath = file.getAbsolutePath();
         StringBuilder sum = new StringBuilder();
         try
         {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithmSelector.getValue());
-            FileInputStream fileInputStream = new FileInputStream(filepath);
+            FileInputStream fileInputStream = new FileInputStream(filePath);
             byte[] dataBytes = new byte[1024];
             int nread;
 
