@@ -1,9 +1,9 @@
 group 'com.theredspy15'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -12,5 +12,5 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile 'com.jfoenix:jfoenix:8.0.1'
+    implementation 'com.jfoenix:jfoenix:9.0.8'
 }
